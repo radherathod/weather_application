@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import Result from './components/Result'
+import axios from 'axios'
+import Search from './components/Search'
 
-function App() {
+export default function App() {
+
+  const[search,setSearch]=useState("")
+  const[weather,setWeather]=useState([])
+
+  const changeSearch = (value)=>{
+    setSearch(value)
+  }
+
+  const searchWeatherHandler = ()=>{
+    if(search !== ""){
+       axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=a4213f49648402d6fa1792c7ee7958f2`
+        )
+  .then(
+    (response)=>{
+      console.log(response.data)
+      setWeather(response.data);
+    }
+  )
+  .catch(
+    (error)=>{
+      console.log(error)
+    }
+  )
+    }
+
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
 
-export default App;
+    <div className="max-w-[550px] mx-auto mt-3 p-3 bg-cyan-50">
+      <h2 className='text-center p-3 text-5xl '>Weather App</h2>
+
+    <Search searchData={search} eventHandler={changeSearch} searchWeather={searchWeatherHandler}/>
+    <Result weatherData={weather} />
+    </div>
+  )
+}
